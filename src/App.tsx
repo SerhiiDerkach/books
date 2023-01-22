@@ -11,6 +11,7 @@ const App: React.FC = React.memo(() => {
     const [orderBy, setOrderBy] = useState(false)
     const [totalOrders, setTotalOrders] = useState<any[]>([])
     const [ordersPrice, setOrdersPrice] = useState(0)
+    const [loading, setLoading] = useState(false)
 
 
     useEffect(() => {
@@ -19,8 +20,10 @@ const App: React.FC = React.memo(() => {
 
     const getData = async () => {
         try {
+            setLoading(true)
             let res = await axios.get('./books.json')
             setBooksData(res.data)
+            setLoading(false)
         } catch (err) {
             console.log(err)
         }
@@ -29,7 +32,7 @@ const App: React.FC = React.memo(() => {
 
     const filterBooks = (value: string) => {
         const filteredBooks = booksData.filter(book => {
-            return book.category.toLowerCase().includes(value.toLowerCase())
+            return book.category.includes(value)
         })
         setBooksData(filteredBooks)
     }
@@ -50,13 +53,10 @@ const App: React.FC = React.memo(() => {
 
     const totalPrice = (book: {id: number, name: string, price: number, category: string}) => {
         setTotalOrders([...totalOrders, book])
-        console.log(book.price + 'book price')
-        console.log(totalOrders + 'totalOrders')
         let ordersSum = totalOrders.reduce((sum, current) => sum + current.price, book.price)
-        console.log(ordersSum)
         setOrdersPrice(ordersSum)
     }
-    let dialogsElements = booksData.map(book => <Book totalPrice={totalPrice} book={book} key={book.id}/>)
+    let booksElements = booksData.map(book => <Book totalPrice={totalPrice} book={book} key={book.id}/>)
 
     return (
         <div className="wrapper">
@@ -65,7 +65,7 @@ const App: React.FC = React.memo(() => {
                     <div>
                         <BookFilter orderBy={orderBy} sortBooks={sortBooks} filterBooks={filterBooks}/>
                     </div>
-                    {dialogsElements}
+                    {loading ? <h3>LOADING....</h3> : booksElements}
                 </div>
                 <div className="app__cart">
                     <Cart ordersPrice={ordersPrice} totalOrders={totalOrders}/>

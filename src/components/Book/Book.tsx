@@ -31,8 +31,6 @@ const Book: React.FC<PropsType> = React.memo(({book, totalPrice}) => {
                         </div>
                     </div>
                 </div>
-
-
             </div>
         );
     }

@@ -6,3 +6,11 @@
 .book__column:first-child {
   display: flex;
 }
+
+.book__name {
+  margin-left: 10px;
+  text-decoration: underline;
+}
+.book__name:hover {
+  cursor: pointer;
+}
